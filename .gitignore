@@ -1,0 +1,6 @@
+target
+tmp
+dist
+.cache
+.history
+*.log
