@@ -20,16 +20,14 @@ object Base {
       } yield (x,y)
     }
 
-    def populateMap(things: Int, symbol: String, 
-                    area: Array[Array[String]],
-                    emptyPoints: IndexedSeq[(Int, Int)]
-                    ): Array[Array[String]] = {
+    def populateMap(things: Int, symbol: String, area: Array[Array[String]], emptyPoints: IndexedSeq[(Int, Int)]): Array[Array[String]] = {
       if(things == 0 || emptyPoints.isEmpty)
         area
-      else
-        populateMap(things - 1, symbol, area(x) update(y, symbol),
-                    emptyPoints diff Seq(emptyPoints(randomPoint))
-                   )
+      else {
+        val (x, y) = emptyPoints(rnd.nextInt(emptyPoints.length))
+        area(x) update(y, symbol)
+        populateMap(things - 1, symbol, area, emptyPoints diff Seq((x,y)))
+      }
     }
 
     // If we have more than 400 guys, we retry the function.
@@ -46,9 +44,9 @@ object Base {
 
     val (zombies, hunters, victims) = generateGuys()
 
-    area = populateMap(zombies, "Z", area, getEmptyPoints(area))
-    area = populateMap(hunters, "H", area, getEmptyPoints(area))
-    area = populateMap(victims, "V", area, getEmptyPoints(area))
+    populateMap(zombies, "Z", area, getEmptyPoints(area))
+    populateMap(hunters, "H", area, getEmptyPoints(area))
+    populateMap(victims, "V", area, getEmptyPoints(area))
 
     println(area.deep.mkString("\n"))
 
@@ -82,8 +80,8 @@ object Base {
       // Zombies move up, down, left or right 1 space, not diagonally.
       // First, check available spaces.
       getZombieEmptySpaces(x, y, area)
-      val newx = xrange(rnd.nextInt(xrange length))
-      val newy = yrange(rnd.nextInt(yrange length))
+      //val newx = xrange(rnd.nextInt(xrange length))
+      //val newy = yrange(rnd.nextInt(yrange length))
     }
   }
 }
