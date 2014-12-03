@@ -1,4 +1,3 @@
-
 object Base {
   def main(args: Array[String]) {
     
@@ -7,6 +6,7 @@ object Base {
 
     // Map will be a two dimensional string that is 20x20.
     // Empty Spaces are denoted by '_'
+    // Should be made into own class
     var area = Array.ofDim[String](20, 20)
     for(x <- 0 to 19; y <- 0 to 19) {
       area(x)(y) = "_"
@@ -17,7 +17,7 @@ object Base {
     val hunterChar = "H"
     val victimChar = "V"
 
-    // Get empty points ("_") from the map
+    // Get empty points ("_") from the map - Should be a class method
     def getEmptyPoints(area : Array[Array[String]]) = {
       for{
         x <- 0 to (area.length -1); 
@@ -26,7 +26,9 @@ object Base {
       } yield (x,y)
     }
 
-    // Populate map with a symbol, which denotes an Entity, by selecting randomly from the array of empty points.
+    // Populate map with a symbol, which denotes an Entity, by selecting 
+    // randomly from the array of empty points. 
+    // - Should be a class method
     def populateMap(things: Int, symbol: String, area: Array[Array[String]], emptyPoints: IndexedSeq[(Int, Int)]): Unit = {
       if(things != 0 && !emptyPoints.isEmpty)
       {
@@ -50,6 +52,7 @@ object Base {
     }
 
     // Check for empty spaces around a zombie
+    // - Should be a class method and generalized for all entities
     def getZombieEmptySpaces(x : Int, y : Int, area : Array[Array[String]]): IndexedSeq[(Int, Int)] = {
       val xrange = if(x == 0) 0 to 1 else if (x == 19) 18 to 19 else x-1 to x+1
       val yrange = if(y == 0) 0 to 1 else if (y == 19) 18 to 19 else y-1 to y+1
@@ -62,6 +65,7 @@ object Base {
     }
 
     // Check for empty spaces around a human
+    // - Should be a class method and generalized for all entities
     def getHumanEmptySpaces(x : Int, y : Int, area : Array[Array[String]]) = {
       val xrange = if(x == 0) 0 to 1 else if (x == 19) 18 to 19 else x-1 to x+1
       val yrange = if(y == 0) 0 to 1 else if (y == 19) 18 to 19 else y-1 to y+1
@@ -72,7 +76,8 @@ object Base {
       } yield (newx, newy)
     }    
 
-    // Find indices(coordinates) containing a certain symbol in area and return them
+    // Find indices(coordinates) containing a certain symbol(Entity) in area and return them
+    // - Should be a class method
     def findThings(symbol: String, area: Array[Array[String]]): IndexedSeq[(Int, Int)] = {
       (for{
         (row, i) <- area.iterator.zipWithIndex
@@ -94,6 +99,7 @@ object Base {
     }
 
     // Hunter + Victim function - Find zombies surrounding (x,y) in area
+    // - Should be a class method and generalized for all entities
     def getNearbyZombies(x: Int, y: Int, area: Array[Array[String]]) = {
       val xrange = if(x == 0) 0 to 1 else if (x == 19) 18 to 19 else x-1 to x+1
       val yrange = if(y == 0) 0 to 1 else if (y == 19) 18 to 19 else y-1 to y+1
@@ -105,6 +111,7 @@ object Base {
     }
 
     // Zombie Function - Find humans 1 square away from (x,y) in area but not diagonally
+    // - Should be a class method and generalized for all entities
     def getNearbyHumans(x: Int, y: Int, area: Array[Array[String]]) = {
       val xrange = if(x == 0) 0 to 1 else if (x == 19) 18 to 19 else x-1 to x+1
       val yrange = if(y == 0) 0 to 1 else if (y == 19) 18 to 19 else y-1 to y+1
