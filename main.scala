@@ -12,21 +12,22 @@
 object Base {
   def main(args: Array[String]) {
     
-    // RNG to determine random events like movement, zombie kills, and bites.
+    // Scala Random Library to determine random events like movement, zombie kills, and bites.
     val rnd = new scala.util.Random
 
-    // Map is 20x20, meaning 400 spots.
+    // Map will be a two dimensional string that is 20x20.
+    // Empty Spaces are denoted by '_'
     var area = Array.ofDim[String](20, 20)
     for(x <- 0 to 19; y <- 0 to 19) {
       area(x)(y) = "_"
     }
 
-    // Map is a string with different symbols representing different Entities
+    // Characters used for different entities
     val zombieChar = "Z"
     val hunterChar = "H"
     val victimChar = "V"
 
-    // Get empty points from the map
+    // Get empty points ("_") from the map
     def getEmptyPoints(area : Array[Array[String]]) = {
       for{
         x <- 0 to (area.length -1); 
@@ -35,11 +36,10 @@ object Base {
       } yield (x,y)
     }
 
-    // Populate map with a symbol(Entity) by selecting randomly from the array of empty points.
-    def populateMap(things: Int, symbol: String, area: Array[Array[String]], emptyPoints: IndexedSeq[(Int, Int)]): Array[Array[String]] = {
-      if(things == 0 || emptyPoints.isEmpty)
-        area
-      else {
+    // Populate map with a symbol, which denotes an Entity, by selecting randomly from the array of empty points.
+    def populateMap(things: Int, symbol: String, area: Array[Array[String]], emptyPoints: IndexedSeq[(Int, Int)]): Unit = {
+      if(things != 0 && !emptyPoints.isEmpty)
+      {
         val (x, y) = emptyPoints(rnd.nextInt(emptyPoints.length))
         area(x) update(y, symbol)
         populateMap(things - 1, symbol, area, emptyPoints diff Seq((x,y)))
