@@ -87,7 +87,7 @@ object Base {
     }
 
     // Take position of one entity and select an empty space randomly
-    def movement(x : Int, y : Int, symbol: String, area : Array[Array[String]], emptySpaces: IndexedSeq[(Int, Int)]) = {
+    def movement(x : Int, y : Int, symbol: String, area : Array[Array[String]], emptySpaces: IndexedSeq[(Int, Int)]): (Int, Int) = {
       // Zombies move up, down, left or right 1 space, not diagonally.
       // Hunters and victims can move anywhere 1 space, including diagonally.
       // First, check available spaces.
@@ -95,6 +95,10 @@ object Base {
         val (newx, newy) = emptySpaces(rnd.nextInt(emptySpaces length))
         area(x)(y) = "_"
         area(newx)(newy) = symbol
+        (newx, newy)
+      }
+      else { 
+        (x, y)
       }
     }
 
@@ -159,17 +163,25 @@ object Base {
           // Hunters kill zombies
           checkAndKillZombies(x, y, area)
         }
+
+        var movedVictims = Seq()
         for((x,y) <- findThings(victimChar, area)) {
           // Victims check if they are near a zombie
           if(!getNearbyZombies(x, y, area).isEmpty){
             // Victims move randomly
-            movement(x, y, victimChar, area, getHumanEmptySpaces(x, y, area))
+            val (vicX,vicY) = movement(x, y, victimChar, area, getHumanEmptySpaces(x, y, area))
+            movedVictims = movedVictims :+ (vicX,vicY)
           }
         }
+
+        // Zombie
         for((x,y) <- findThings(zombieChar, area)) {
           // Zombies eat random human if next to one, but not diagonally.
           checkAndEatHuman(x, y, area)
         }
+
+        // Victims evolution
+        
         gameLoop(ticks - 1)
       }
     }
@@ -178,7 +190,7 @@ object Base {
     val (zombies, hunters, victims) = generateGuys()
 
     // Number of times to run game loop
-    val ticks = 100
+    val ticks = 1
 
     // Populate map with zombies, hunters, and victims
     populateMap(zombies, zombieChar, area, getEmptyPoints(area))
